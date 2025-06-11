@@ -1,0 +1,1666 @@
+{
+	"info": {
+		"_postman_id": "a7764c78-800f-49ec-a101-2e169492e9ff",
+		"name": "YOUTUBE API TEST",
+		"description": "# 🚀 Get started here\n\nThis template guides you through CRUD operations (GET, POST, PUT, DELETE), variables, and tests.\n\n## 🔖 **How to use this template**\n\n#### **Step 1: Send requests**\n\nRESTful APIs allow you to perform CRUD operations using the POST, GET, PUT, and DELETE HTTP methods.\n\nThis collection contains each of these [request](https://learning.postman.com/docs/sending-requests/requests/) types. Open each request and click \"Send\" to see what happens.\n\n#### **Step 2: View responses**\n\nObserve the response tab for status code (200 OK), response time, and size.\n\n#### **Step 3: Send new Body data**\n\nUpdate or add new data in \"Body\" in the POST request. Typically, Body data is also used in PUT request.\n\n```\n{\n    \"name\": \"Add your name in the body\"\n}\n\n ```\n\n#### **Step 4: Update the variable**\n\nVariables enable you to store and reuse values in Postman. We have created a [variable](https://learning.postman.com/docs/sending-requests/variables/) called `base_url` with the sample request [https://postman-api-learner.glitch.me](https://postman-api-learner.glitch.me). Replace it with your API endpoint to customize this collection.\n\n#### **Step 5: Add tests in the \"Scripts\" tab**\n\nAdding tests to your requests can help you confirm that your API is working as expected. You can write test scripts in JavaScript and view the output in the \"Test Results\" tab.\n\n<img src=\"https://content.pstmn.io/fa30ea0a-373d-4545-a668-e7b283cca343/aW1hZ2UucG5n\" alt=\"\" height=\"1530\" width=\"2162\">\n\n## 💪 Pro tips\n\n- Use folders to group related requests and organize the collection.\n    \n- Add more [scripts](https://learning.postman.com/docs/writing-scripts/intro-to-scripts/) to verify if the API works as expected and execute workflows.\n    \n\n## 💡Related templates\n\n[API testing basics](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=e9a37a28-055b-49cd-8c7e-97494a21eb54&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)  \n[API documentation](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=e9c28f47-1253-44af-a2f3-20dce4da1f18&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)  \n[Authorization methods](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=31a9a6ed-4cdf-4ced-984c-d12c9aec1c27&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "44813922",
+		"_collection_link": "https://busra-7076592.postman.co/workspace/busra's-Workspace~28463d5b-5a91-4147-8ad2-2a6c1553d231/collection/44813922-a7764c78-800f-49ec-a101-2e169492e9ff?action=share&source=collection_link&creator=44813922"
+	},
+	"item": [
+		{
+			"name": "Video Arama",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// 1. HTTP Yanıt Kodunu Kontrol Et",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"// 2. Yanıtın İçinde 'items' Dizisinin Bulunduğunu Kontrol Et",
+							"pm.test(\"Response contains items\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.items).to.be.an(\"array\").that.is.not.empty;",
+							"});",
+							"",
+							"// 3. Video Başlıklarının Geldiğini Kontrol Et",
+							"pm.test(\"Response contains video titles\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    jsonData.items.forEach(item => {",
+							"        pm.expect(item.snippet.title).to.exist;",
+							"    });",
+							"});",
+							"",
+							"// 4. Yanıt Süresini Kontrol Et (500ms'den kısa olmalı)",
+							"pm.test(\"Response time is below 500ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(500);",
+							"});",
+							"",
+							"// 5. API Yanıtında Beklenen 'kind' Alanının Doğru Olduğunu Kontrol Et",
+							"pm.test(\"Response has correct kind\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.kind).to.eql(\"youtube#searchListResponse\");",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://www.googleapis.com/youtube/v3/search?q=Music Videos&part=snippet&type=video&key={{API_KEY}}",
+					"protocol": "https",
+					"host": [
+						"www",
+						"googleapis",
+						"com"
+					],
+					"path": [
+						"youtube",
+						"v3",
+						"search"
+					],
+					"query": [
+						{
+							"key": "q",
+							"value": "Music Videos",
+							"description": "Aramak istediğiniz kelime."
+						},
+						{
+							"key": "part",
+							"value": "snippet"
+						},
+						{
+							"key": "type",
+							"value": "video",
+							"description": "Yalnızca video sonuçları."
+						},
+						{
+							"key": "key",
+							"value": "{{API_KEY}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Video Detaylarını Getirme",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response contains video details\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.items[0].snippet.title).to.exist;",
+							"    pm.expect(jsonData.items[0].snippet.channelTitle).to.exist;",
+							"    pm.expect(jsonData.items[0].statistics.viewCount).to.exist;",
+							"    pm.expect(jsonData.items[0].statistics.likeCount).to.exist;",
+							"    pm.expect(jsonData.items[0].statistics.commentCount).to.exist;",
+							"});",
+							"",
+							"pm.test(\"Response time is below 500ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(500);",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://www.googleapis.com/youtube/v3/videos?key={{API_KEY}}&id=kPa7bsKwL-c&part=snippet,statistics",
+					"protocol": "https",
+					"host": [
+						"www",
+						"googleapis",
+						"com"
+					],
+					"path": [
+						"youtube",
+						"v3",
+						"videos"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{API_KEY}}",
+							"description": "API Key"
+						},
+						{
+							"key": "id",
+							"value": "kPa7bsKwL-c",
+							"description": "video kimliği"
+						},
+						{
+							"key": "part",
+							"value": "snippet,statistics",
+							"description": "dönen veri türü"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Kanal Bilgilerini Getirme",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response contains channel details\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.items[0].snippet.title).to.exist;",
+							"    pm.expect(jsonData.items[0].snippet.description).to.exist;",
+							"    pm.expect(jsonData.items[0].statistics.subscriberCount).to.exist;",
+							"    pm.expect(jsonData.items[0].statistics.videoCount).to.exist;",
+							"});",
+							"",
+							"pm.test(\"Response time is below 500ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(500);",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://www.googleapis.com/youtube/v3/channels?key={{API_KEY}}&id=UC07Kxew-cMIaykMOkzqHtBQ&part=snippet,statistics",
+					"protocol": "https",
+					"host": [
+						"www",
+						"googleapis",
+						"com"
+					],
+					"path": [
+						"youtube",
+						"v3",
+						"channels"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{API_KEY}}",
+							"description": "API Key"
+						},
+						{
+							"key": "id",
+							"value": "UC07Kxew-cMIaykMOkzqHtBQ",
+							"description": "kanal kimliği"
+						},
+						{
+							"key": "part",
+							"value": "snippet,statistics",
+							"description": "Dönen veri türü"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Oynatma Listesi Bilgilerini Getirme",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response contains playlist details\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.items[0].snippet.title).to.exist;",
+							"    pm.expect(jsonData.items[0].snippet.channelTitle).to.exist;",
+							"    pm.expect(jsonData.items[0].contentDetails.itemCount).to.exist;",
+							"});",
+							"",
+							"pm.test(\"Response time is below 500ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(500);",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://www.googleapis.com/youtube/v3/playlists?key={{API_KEY}}&id=PL8A83124F1D79BD4F&part=snippet,contentDetails",
+					"protocol": "https",
+					"host": [
+						"www",
+						"googleapis",
+						"com"
+					],
+					"path": [
+						"youtube",
+						"v3",
+						"playlists"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{API_KEY}}",
+							"description": "Api key"
+						},
+						{
+							"key": "id",
+							"value": "PL8A83124F1D79BD4F",
+							"description": "Oynatma listesi kimliği"
+						},
+						{
+							"key": "part",
+							"value": "snippet,contentDetails",
+							"description": "Dönen veri türü"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Oynatma Listesindeki Videoları Getirme",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response contains playlist items\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.items.length).to.be.above(0);",
+							"    pm.expect(jsonData.items[0].snippet.title).to.exist;",
+							"    pm.expect(jsonData.items[0].snippet.resourceId.videoId).to.exist;",
+							"});",
+							"",
+							"pm.test(\"Response time is below 500ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(500);",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://www.googleapis.com/youtube/v3/playlistItems?key={{API_KEY}}&playlistId=PL8A83124F1D79BD4F&part=snippet",
+					"protocol": "https",
+					"host": [
+						"www",
+						"googleapis",
+						"com"
+					],
+					"path": [
+						"youtube",
+						"v3",
+						"playlistItems"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{API_KEY}}",
+							"description": "API key"
+						},
+						{
+							"key": "playlistId",
+							"value": "PL8A83124F1D79BD4F",
+							"description": "Oynatma listesi kimliği"
+						},
+						{
+							"key": "part",
+							"value": "snippet",
+							"description": "Dönen veri türü"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Video Yorumlarını Getirme",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response contains comments\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.items.length).to.be.above(0);",
+							"    pm.expect(jsonData.items[0].snippet.topLevelComment.snippet.textDisplay).to.exist;",
+							"    pm.expect(jsonData.items[0].snippet.topLevelComment.snippet.authorDisplayName).to.exist;",
+							"});",
+							"",
+							"pm.test(\"Response time is below 500ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(500);",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://www.googleapis.com/youtube/v3/commentThreads?key={{API_KEY}}&videoId=kJQP7kiw5Fk&part=snippet,replies",
+					"protocol": "https",
+					"host": [
+						"www",
+						"googleapis",
+						"com"
+					],
+					"path": [
+						"youtube",
+						"v3",
+						"commentThreads"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{API_KEY}}",
+							"description": "API Key"
+						},
+						{
+							"key": "videoId",
+							"value": "kJQP7kiw5Fk",
+							"description": "Video kimliği"
+						},
+						{
+							"key": "part",
+							"value": "snippet,replies",
+							"description": "Dönen veri türü"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Video Kategori Bilgilerini Getirme",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response contains category details\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.items[0].snippet.title).to.exist;",
+							"    pm.expect(jsonData.items[0].snippet.assignable).to.exist;",
+							"});",
+							"",
+							"pm.test(\"Response time is below 500ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(500);",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://www.googleapis.com/youtube/v3/videoCategories?key={{API_KEY}}&id=10&part=snippet",
+					"protocol": "https",
+					"host": [
+						"www",
+						"googleapis",
+						"com"
+					],
+					"path": [
+						"youtube",
+						"v3",
+						"videoCategories"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{API_KEY}}",
+							"description": "API key"
+						},
+						{
+							"key": "id",
+							"value": "10",
+							"description": "Kategori kimliği"
+						},
+						{
+							"key": "part",
+							"value": "snippet",
+							"description": "Dönen veri türü"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Kanalın Tüm Oynatma Listelerini Getirme",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response contains playlists\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.items.length).to.be.above(0);",
+							"    pm.expect(jsonData.items[0].snippet.title).to.exist;",
+							"    pm.expect(jsonData.items[0].contentDetails.itemCount).to.exist;",
+							"});",
+							"",
+							"pm.test(\"Response time is below 500ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(500);",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://www.googleapis.com/youtube/v3/playlists?key={{API_KEY}}&channelId=UCUxFrjFhqDPrXxUNbitM4FQ&part=snippet,contentDetails",
+					"protocol": "https",
+					"host": [
+						"www",
+						"googleapis",
+						"com"
+					],
+					"path": [
+						"youtube",
+						"v3",
+						"playlists"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{API_KEY}}",
+							"description": "API KEY"
+						},
+						{
+							"key": "channelId",
+							"value": "UCUxFrjFhqDPrXxUNbitM4FQ",
+							"description": "Kanal kimliği"
+						},
+						{
+							"key": "part",
+							"value": "snippet,contentDetails",
+							"description": "Dönen veri türü"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Kanalın Aboneliklerini Getirme",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response contains subscriptions\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.items.length).to.be.above(0);",
+							"    pm.expect(jsonData.items[0].snippet.title).to.exist;",
+							"    pm.expect(jsonData.items[0].snippet.resourceId.channelId).to.exist;",
+							"});",
+							"",
+							"pm.test(\"Response time is below 500ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(500);",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://www.googleapis.com/youtube/v3/subscriptions?key={{API_KEY}}&channelId=UCUxFrjFhqDPrXxUNbitM4FQ&part=snippet",
+					"protocol": "https",
+					"host": [
+						"www",
+						"googleapis",
+						"com"
+					],
+					"path": [
+						"youtube",
+						"v3",
+						"subscriptions"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{API_KEY}}",
+							"description": "API Key"
+						},
+						{
+							"key": "channelId",
+							"value": "UCUxFrjFhqDPrXxUNbitM4FQ",
+							"description": "Kanal kimliği"
+						},
+						{
+							"key": "part",
+							"value": "snippet",
+							"description": "Dönen veri türü"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Canlı Yayın Bilgilerini Getirme",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 401\", function () {",
+							"    pm.response.to.have.status(401);",
+							"});",
+							"",
+							"pm.test(\"Error message indicates missing authentication\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.error.message).to.include(\"API keys are not supported\");",
+							"    pm.expect(jsonData.error.errors[0].reason).to.equal(\"required\");",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://www.googleapis.com/youtube/v3/liveBroadcasts?key={{API_KEY}}&id=YOUR_LIVE_ID&part=snippet,status",
+					"protocol": "https",
+					"host": [
+						"www",
+						"googleapis",
+						"com"
+					],
+					"path": [
+						"youtube",
+						"v3",
+						"liveBroadcasts"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{API_KEY}}",
+							"description": "YOUR_API_KEY"
+						},
+						{
+							"key": "id",
+							"value": "YOUR_LIVE_ID",
+							"description": "Canlı yayın kimliği"
+						},
+						{
+							"key": "part",
+							"value": "snippet,status",
+							"description": "Dönen veri türü"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Video Altyazılarını Getirme",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response contains captions data\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.items.length).to.be.above(0);",
+							"    pm.expect(jsonData.items[0].snippet.language).to.exist;",
+							"    pm.expect(jsonData.items[0].snippet.videoId).to.exist;",
+							"});",
+							"",
+							"pm.test(\"Response time is below 500ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(500);",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://www.googleapis.com/youtube/v3/captions?key={{API_KEY}}&videoId=wagn8Wrmzuc&part=snippet",
+					"protocol": "https",
+					"host": [
+						"www",
+						"googleapis",
+						"com"
+					],
+					"path": [
+						"youtube",
+						"v3",
+						"captions"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{API_KEY}}",
+							"description": "YOUR_API_KEY"
+						},
+						{
+							"key": "videoId",
+							"value": "wagn8Wrmzuc",
+							"description": "Video kimliği"
+						},
+						{
+							"key": "part",
+							"value": "snippet",
+							"description": "Dönen veri türü"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Oynatma Listesi Oluşturma",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200 or 201\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+							"});",
+							"",
+							"",
+							"pm.test(\"Response contains playlist details\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.snippet.title).to.exist;",
+							"});",
+							"",
+							"pm.test(\"Response time is below 1000ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(1000);",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "oauth2",
+					"oauth2": [
+						{
+							"key": "authRequestParams",
+							"value": [],
+							"type": "any"
+						},
+						{
+							"key": "refreshTokenUrl",
+							"value": "https://oauth2.googleapis.com/token",
+							"type": "string"
+						},
+						{
+							"key": "scope",
+							"value": "https://www.googleapis.com/auth/youtube.force-ssl",
+							"type": "string"
+						},
+						{
+							"key": "accessTokenUrl",
+							"value": "https://oauth2.googleapis.com/token",
+							"type": "string"
+						},
+						{
+							"key": "authUrl",
+							"value": "https://accounts.google.com/o/oauth2/auth",
+							"type": "string"
+						},
+						{
+							"key": "redirect_uri",
+							"value": "https://oauth.pstmn.io/v1/callback",
+							"type": "string"
+						},
+						{
+							"key": "clientSecret",
+							"value": "{{CLIENT_SECRET}}",
+							"type": "string"
+						},
+						{
+							"key": "clientId",
+							"value": "660901721732-hnunpj6j359lsgcckjamsmdjooscpot4.apps.googleusercontent.com",
+							"type": "string"
+						},
+						{
+							"key": "tokenName",
+							"value": "YouTube API Token",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{CLIENT_SECRET}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"snippet\": {\n    \"title\": \"My Test Playlist1\",\n    \"description\": \"Playlist created via YouTube API\",\n    \"tags\": [\"API\", \"YouTube\", \"Testing\"],\n    \"defaultLanguage\": \"en\"\n  },\n  \"status\": {\n    \"privacyStatus\": \"public\"\n  }\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://www.googleapis.com/youtube/v3/playlists?key={{API_KEY}}&part=snippet,status",
+					"protocol": "https",
+					"host": [
+						"www",
+						"googleapis",
+						"com"
+					],
+					"path": [
+						"youtube",
+						"v3",
+						"playlists"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{API_KEY}}",
+							"description": "API key"
+						},
+						{
+							"key": "part",
+							"value": "snippet,status",
+							"description": "Dönen veri türü"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Oynatma Listesine Video Ekleme",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response contains added video details\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.snippet.playlistId).to.equal(\"PL8hN07uAE5npbCnFbXT9XJ5dgYLg2KDJl\");",
+							"    pm.expect(jsonData.snippet.resourceId.videoId).to.exist;",
+							"});",
+							"",
+							"pm.test(\"Response time is below 500ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(500);",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "oauth2",
+					"oauth2": [
+						{
+							"key": "authRequestParams",
+							"value": [],
+							"type": "any"
+						},
+						{
+							"key": "refreshTokenUrl",
+							"value": "https://oauth2.googleapis.com/token",
+							"type": "string"
+						},
+						{
+							"key": "scope",
+							"value": "https://www.googleapis.com/auth/youtube.force-ssl",
+							"type": "string"
+						},
+						{
+							"key": "accessTokenUrl",
+							"value": "https://oauth2.googleapis.com/token",
+							"type": "string"
+						},
+						{
+							"key": "authUrl",
+							"value": "https://accounts.google.com/o/oauth2/auth",
+							"type": "string"
+						},
+						{
+							"key": "redirect_uri",
+							"value": "https://oauth.pstmn.io/v1/callback",
+							"type": "string"
+						},
+						{
+							"key": "clientSecret",
+							"value": "{{CLIENT_SECRET}}",
+							"type": "string"
+						},
+						{
+							"key": "clientId",
+							"value": "660901721732-hnunpj6j359lsgcckjamsmdjooscpot4.apps.googleusercontent.com",
+							"type": "string"
+						},
+						{
+							"key": "tokenName",
+							"value": "YouTube API Token",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{CLIENT_SECRET}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"snippet\": {\n    \"playlistId\": \"PL8hN07uAE5npbCnFbXT9XJ5dgYLg2KDJl\",\n    \"resourceId\": {\n      \"kind\": \"youtube#video\",\n      \"videoId\": \"l08Zw-RY__Q\"\n    },\n    \"position\": 0\n  }\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://www.googleapis.com/youtube/v3/playlistItems?key={{API_KEY}}&part=snippet",
+					"protocol": "https",
+					"host": [
+						"www",
+						"googleapis",
+						"com"
+					],
+					"path": [
+						"youtube",
+						"v3",
+						"playlistItems"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{API_KEY}}",
+							"description": "API erişim anahtarı"
+						},
+						{
+							"key": "part",
+							"value": "snippet",
+							"description": "Dönen veri türü"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Oynatma Listesi Bilgi Güncelleme",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response contains updated playlist details\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.snippet.title).to.equal(\"Updated Playlist Title\");",
+							"    pm.expect(jsonData.snippet.description).to.equal(\"This playlist has been updated via API.\");",
+							"});",
+							"",
+							"pm.test(\"Response time is below 500ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(500);",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "oauth2",
+					"oauth2": [
+						{
+							"key": "authRequestParams",
+							"value": [],
+							"type": "any"
+						},
+						{
+							"key": "refreshTokenUrl",
+							"value": "https://oauth2.googleapis.com/token",
+							"type": "string"
+						},
+						{
+							"key": "scope",
+							"value": "https://www.googleapis.com/auth/youtube.force-ssl",
+							"type": "string"
+						},
+						{
+							"key": "accessTokenUrl",
+							"value": "https://oauth2.googleapis.com/token",
+							"type": "string"
+						},
+						{
+							"key": "authUrl",
+							"value": "https://accounts.google.com/o/oauth2/auth",
+							"type": "string"
+						},
+						{
+							"key": "redirect_uri",
+							"value": "https://oauth.pstmn.io/v1/callback",
+							"type": "string"
+						},
+						{
+							"key": "clientSecret",
+							"value": "{{CLIENT_SECRET}}",
+							"type": "string"
+						},
+						{
+							"key": "clientId",
+							"value": "660901721732-hnunpj6j359lsgcckjamsmdjooscpot4.apps.googleusercontent.com",
+							"type": "string"
+						},
+						{
+							"key": "tokenName",
+							"value": "YouTube API Token",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{CLIENT_SECRET}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"id\": \"PL8hN07uAE5npbCnFbXT9XJ5dgYLg2KDJl\",\n  \"snippet\": {\n    \"title\": \"Updated Playlist Title\",\n    \"description\": \"This playlist has been updated via API.\"\n  }\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://www.googleapis.com/youtube/v3/playlists?key={{API_KEY}}&part=snippet",
+					"protocol": "https",
+					"host": [
+						"www",
+						"googleapis",
+						"com"
+					],
+					"path": [
+						"youtube",
+						"v3",
+						"playlists"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{API_KEY}}",
+							"description": "API Key"
+						},
+						{
+							"key": "part",
+							"value": "snippet",
+							"description": "Dönen veri türü"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Oynatma Listesinden Bir Video Silme",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 204\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});",
+							"",
+							"pm.test(\"Response time is below 500ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(500);",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "oauth2",
+					"oauth2": [
+						{
+							"key": "authRequestParams",
+							"value": [],
+							"type": "any"
+						},
+						{
+							"key": "refreshTokenUrl",
+							"value": "https://oauth2.googleapis.com/token",
+							"type": "string"
+						},
+						{
+							"key": "scope",
+							"value": "https://www.googleapis.com/auth/youtube.force-ssl",
+							"type": "string"
+						},
+						{
+							"key": "accessTokenUrl",
+							"value": "https://oauth2.googleapis.com/token",
+							"type": "string"
+						},
+						{
+							"key": "authUrl",
+							"value": "https://accounts.google.com/o/oauth2/auth",
+							"type": "string"
+						},
+						{
+							"key": "redirect_uri",
+							"value": "https://oauth.pstmn.io/v1/callback",
+							"type": "string"
+						},
+						{
+							"key": "clientSecret",
+							"value": "{{CLIENT_SECRET}}",
+							"type": "string"
+						},
+						{
+							"key": "clientId",
+							"value": "660901721732-hnunpj6j359lsgcckjamsmdjooscpot4.apps.googleusercontent.com",
+							"type": "string"
+						},
+						{
+							"key": "tokenName",
+							"value": "YouTube API Token",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{CLIENT_SECRET}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://www.googleapis.com/youtube/v3/playlistItems?key={{API_KEY}}&id=UEw4aE4wN3VBRTVucGJDbkZiWFQ5WEo1ZGdZTGcyS0RKbC4yODlGNEE0NkRGMEEzMEQy",
+					"protocol": "https",
+					"host": [
+						"www",
+						"googleapis",
+						"com"
+					],
+					"path": [
+						"youtube",
+						"v3",
+						"playlistItems"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{API_KEY}}",
+							"description": "API Key"
+						},
+						{
+							"key": "id",
+							"value": "UEw4aE4wN3VBRTVucGJDbkZiWFQ5WEo1ZGdZTGcyS0RKbC4yODlGNEE0NkRGMEEzMEQy",
+							"description": "Silinecek öğe ID'si"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Oynatma Listesini Tamamen Silme",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 204\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});",
+							"",
+							"pm.test(\"Response time is below 500ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(500);",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "oauth2",
+					"oauth2": [
+						{
+							"key": "authRequestParams",
+							"value": [],
+							"type": "any"
+						},
+						{
+							"key": "refreshTokenUrl",
+							"value": "https://oauth2.googleapis.com/token",
+							"type": "string"
+						},
+						{
+							"key": "scope",
+							"value": "https://www.googleapis.com/auth/youtube.force-ssl",
+							"type": "string"
+						},
+						{
+							"key": "accessTokenUrl",
+							"value": "https://oauth2.googleapis.com/token",
+							"type": "string"
+						},
+						{
+							"key": "authUrl",
+							"value": "https://accounts.google.com/o/oauth2/auth",
+							"type": "string"
+						},
+						{
+							"key": "redirect_uri",
+							"value": "https://oauth.pstmn.io/v1/callback",
+							"type": "string"
+						},
+						{
+							"key": "clientSecret",
+							"value": "{{CLIENT_SECRET}}",
+							"type": "string"
+						},
+						{
+							"key": "clientId",
+							"value": "660901721732-hnunpj6j359lsgcckjamsmdjooscpot4.apps.googleusercontent.com",
+							"type": "string"
+						},
+						{
+							"key": "tokenName",
+							"value": "YouTube API Token",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{CLIENT_SECRET}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://www.googleapis.com/youtube/v3/playlists?id=PL8hN07uAE5no9lGs1MwphaBBuxjoE-rZX&key={{API_KEY}}",
+					"protocol": "https",
+					"host": [
+						"www",
+						"googleapis",
+						"com"
+					],
+					"path": [
+						"youtube",
+						"v3",
+						"playlists"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "PL8hN07uAE5no9lGs1MwphaBBuxjoE-rZX"
+						},
+						{
+							"key": "key",
+							"value": "{{API_KEY}}",
+							"description": "\tAPI erişim anahtarı"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Oynatma Listesi Güncelleme (Başlık & Açıklama)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response contains updated playlist details\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.snippet.title).to.equal(\"Updated Test Playlist\");",
+							"    pm.expect(jsonData.snippet.description).to.equal(\"This playlist has been updated again via API.\");",
+							"});",
+							"",
+							"pm.test(\"Response time is below 500ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(500);",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "oauth2",
+					"oauth2": [
+						{
+							"key": "authRequestParams",
+							"value": [],
+							"type": "any"
+						},
+						{
+							"key": "refreshTokenUrl",
+							"value": "https://oauth2.googleapis.com/token",
+							"type": "string"
+						},
+						{
+							"key": "scope",
+							"value": "https://www.googleapis.com/auth/youtube.force-ssl",
+							"type": "string"
+						},
+						{
+							"key": "accessTokenUrl",
+							"value": "https://oauth2.googleapis.com/token",
+							"type": "string"
+						},
+						{
+							"key": "authUrl",
+							"value": "https://accounts.google.com/o/oauth2/auth",
+							"type": "string"
+						},
+						{
+							"key": "redirect_uri",
+							"value": "https://oauth.pstmn.io/v1/callback",
+							"type": "string"
+						},
+						{
+							"key": "clientSecret",
+							"value": "{{CLIENT_SECRET}}",
+							"type": "string"
+						},
+						{
+							"key": "clientId",
+							"value": "660901721732-hnunpj6j359lsgcckjamsmdjooscpot4.apps.googleusercontent.com",
+							"type": "string"
+						},
+						{
+							"key": "tokenName",
+							"value": "YouTube API Token",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{CLIENT_SECRET}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"id\": \"PL8hN07uAE5notcLjP6fMH4r0zLns2g7kW\",\n  \"snippet\": {\n    \"title\": \"Updated Test Playlist Odevvvvv\",\n    \"description\": \"This playlist has been updated again via API.\"\n  }\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://www.googleapis.com/youtube/v3/playlists?key={{API_KEY}}&part=snippet",
+					"protocol": "https",
+					"host": [
+						"www",
+						"googleapis",
+						"com"
+					],
+					"path": [
+						"youtube",
+						"v3",
+						"playlists"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{API_KEY}}",
+							"description": "API erişim anahtarı"
+						},
+						{
+							"key": "part",
+							"value": "snippet",
+							"description": "Güncellenecek veri türü"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Oynatma Listesi Başlığını Güncelleme",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response contains updated playlist title\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.snippet.title).to.equal(\"Updated Test Playlist Title\");",
+							"});",
+							"",
+							"pm.test(\"Response time is below 500ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(500);",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "oauth2",
+					"oauth2": [
+						{
+							"key": "authRequestParams",
+							"value": [],
+							"type": "any"
+						},
+						{
+							"key": "refreshTokenUrl",
+							"value": "https://oauth2.googleapis.com/token",
+							"type": "string"
+						},
+						{
+							"key": "scope",
+							"value": "https://www.googleapis.com/auth/youtube.force-ssl",
+							"type": "string"
+						},
+						{
+							"key": "accessTokenUrl",
+							"value": "https://oauth2.googleapis.com/token",
+							"type": "string"
+						},
+						{
+							"key": "authUrl",
+							"value": "https://accounts.google.com/o/oauth2/auth",
+							"type": "string"
+						},
+						{
+							"key": "redirect_uri",
+							"value": "https://oauth.pstmn.io/v1/callback",
+							"type": "string"
+						},
+						{
+							"key": "clientSecret",
+							"value": "{{CLIENT_SECRET}}",
+							"type": "string"
+						},
+						{
+							"key": "clientId",
+							"value": "660901721732-hnunpj6j359lsgcckjamsmdjooscpot4.apps.googleusercontent.com",
+							"type": "string"
+						},
+						{
+							"key": "tokenName",
+							"value": "YouTube API Token",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{CLIENT_SECRET}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json\"",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"id\": \"PL8hN07uAE5noyXtZA5sxXFJCsZd4v83kO\",\n  \"snippet\": {\n    \"title\": \"Updated Test Playlist Title\"\n  }\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://www.googleapis.com/youtube/v3/playlists?part=snippet&key={{API_KEY}}",
+					"protocol": "https",
+					"host": [
+						"www",
+						"googleapis",
+						"com"
+					],
+					"path": [
+						"youtube",
+						"v3",
+						"playlists"
+					],
+					"query": [
+						{
+							"key": "part",
+							"value": "snippet"
+						},
+						{
+							"key": "key",
+							"value": "{{API_KEY}}"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "id",
+			"value": "1"
+		},
+		{
+			"key": "base_url",
+			"value": "https://postman-rest-api-learner.glitch.me/"
+		}
+	]
+}
